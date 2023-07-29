@@ -1,0 +1,10 @@
+---
+- name: Install Grafana
+  hosts: main
+  become: yes
+
+  tasks: 
+  - name: download grafana key
+    ansible.builtin.rpm_key:
+      state: present
+      key: https://packages.grafana.com/gpg.key
