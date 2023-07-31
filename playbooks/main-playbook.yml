@@ -3,6 +3,9 @@
   hosts: web
   remote_user: ubuntu
   become: yes
+  vars:
+    listen_address: 0.0.0.0
+    listen_port: 9090
   
   tasks:
   - name: download apt key
@@ -56,7 +59,39 @@
       - /etc/prometheus/rules.d
       - /etc/prometheus/files_sd
       - /var/lib/prometheus
-
+  - name: Copy Files
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: '0755'
+      owner: prometheus
+      group: prometheus
+    loop:
+      - /home/ubuntu/prometheus-2.30.3.linux-amd64/prometheus
+      - /home/ubuntu/prometheus-2.30.3.linux-amd64/promtool
+  - name: Copy Files
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: /etc/prometheus
+      remote_src: yes
+    loop:
+      - /home/ubuntu/prometheus-2.30.3.linux-amd64/consoles
+      - /home/ubuntu/prometheus-2.30.3.linux-amd64/console_libraries
+  - name: Prometheus config file
+    ansible.builtin.template:
+      src: prometheus.yml.j2
+      dest: /etc/prometheus/prometheus.yml
+  - name: Create systemd file
+    ansible.builtin.template:
+      src: prometheus.service.j2
+      dest: /etc/systemd/system/prometheus.service
+  - name: Start Prometheus service
+    ansible.builtin.systemd:
+      state: started
+      enabled: yes
+      name: prometheus
+      daemon_reload: yes
 
 
   # - name: Create Prom Group

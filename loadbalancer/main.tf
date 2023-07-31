@@ -1,10 +1,12 @@
 resource "aws_lb" "terralab-lb" {
   name               = "terralab-lb"
   internal           = false
-  
+
 #   load_balancer_type is application by default 
 security_groups = [aws_security_group.web.id]
+
   load_balancer_type = "application"
+  
   subnets            = [for subnet in var.public_subnets: subnet]
 
 #   access_logs {
