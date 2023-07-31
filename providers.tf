@@ -7,7 +7,7 @@ terraform {
 }
 
 provider "aws" {
-    region = var.AWS_REGION
+    region = "us-east-1"
     shared_credentials_files = [var.credentials_file]
     profile = var.aws_credentials_profile
 }
