@@ -1,5 +1,5 @@
 ---
-- name: jenkins
+- name: jenkins and terraform install
   hosts: jenkins
   remote_user: ubuntu
   become: yes
@@ -27,6 +27,20 @@
       name: jenkins
       enabled: yes
       state: started
+  - name: download terraform key
+    ansible.builtin.apt_key:
+      url: https://apt.releases.hashicorp.com/gpg
+      state: present
+  - name: add tf to sources list
+    ansible.builtin.apt_repository:
+      repo: "deb https://apt.releases.hashicorp.com focal main"
+      filename: hashicorp.list
+      state: present
+  - name: update che and install terraform
+    ansible.builtin.apt:
+      name: terraform
+      update_cache: yes
+
 
 
 

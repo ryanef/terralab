@@ -39,43 +39,43 @@ resource "aws_instance" "terralab" {
   }
 }
 
-resource "aws_instance" "jenkins" {
-  subnet_id = var.public_subnets[0]
-  ami           = data.aws_ami.ubuntu.id
-  key_name= aws_key_pair.tl_key.id
-  security_groups = [aws_security_group.ssh.id]
-  depends_on = [aws_key_pair.tl_key]
-  instance_type = "t3.micro"
-  count = 1
+# resource "aws_instance" "jenkins" {
+#   subnet_id = var.public_subnets[0]
+#   ami           = data.aws_ami.ubuntu.id
+#   key_name= aws_key_pair.tl_key.id
+#   security_groups = [aws_security_group.ssh.id]
+#   depends_on = [aws_key_pair.tl_key]
+#   instance_type = "t3.micro"
+#   count = 1
 
-  provisioner "local-exec" {
-    command = "printf '\n${self.public_ip}' >> aws_jenkins_server && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region ${var.AWS_REGION}"
-    environment = {}
-  }
+#   provisioner "local-exec" {
+#     command = "printf '\n${self.public_ip}' >> aws_jenkins_server && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region ${var.AWS_REGION}"
+#     environment = {}
+#   }
 
-  provisioner "local-exec" {
-    when = destroy
-    command = "sed -i '/^[0-9]/d' aws_jenkins_server"
-  }
+#   provisioner "local-exec" {
+#     when = destroy
+#     command = "sed -i '/^[0-9]/d' aws_jenkins_server"
+#   }
 
-  tags = {
-    Name = "tl-jenkins"
-  }
-}
+#   tags = {
+#     Name = "tl-jenkins"
+#   }
+# }
 
-resource "null_resource" "grafana_install" {
-  depends_on = [aws_instance.terralab]
-  provisioner "local-exec" {
-    command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/main-playbook.yml"
-  }
-}
+# resource "null_resource" "grafana_install" {
+#   depends_on = [aws_instance.terralab]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/main-playbook.yml"
+#   }
+# }
 
-resource "null_resource" "jenkins_install" {
-  depends_on = [aws_instance.jenkins]
-  provisioner "local-exec" {
-    command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/jenkins.yml"
-  }
-}
+# resource "null_resource" "jenkins_install" {
+#   depends_on = [aws_instance.jenkins]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/jenkins.yml"
+#   }
+# }
 resource "aws_lb_target_group_attachment" "tl-tg-attachment" {
   target_group_arn = var.target_group_arn
   count = length(aws_instance.terralab)
