@@ -14,7 +14,7 @@
       state: present
   - name: Add Grafana repo to sources.list
     ansible.builtin.apt_repository:
-      repo: "deb https://packages.grafana.com/oss/deb stable main"
+      repo: deb https://packages.grafana.com/oss/deb stable main
       filename: grafana
       state: present
   - name: Update apt cache and install Grafana
