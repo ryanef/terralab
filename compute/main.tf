@@ -45,7 +45,7 @@ resource "aws_instance" "terralab" {
 #   key_name= aws_key_pair.tl_key.id
 #   security_groups = [aws_security_group.ssh.id]
 #   depends_on = [aws_key_pair.tl_key]
-#   instance_type = "t3.micro"
+#   instance_type = "t3.small"
 #   count = 1
 
 #   provisioner "local-exec" {
@@ -63,12 +63,12 @@ resource "aws_instance" "terralab" {
 #   }
 # }
 
-# resource "null_resource" "grafana_install" {
-#   depends_on = [aws_instance.terralab]
-#   provisioner "local-exec" {
-#     command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/main-playbook.yml"
-#   }
-# }
+# # resource "null_resource" "grafana_install" {
+# #   depends_on = [aws_instance.terralab]
+# #   provisioner "local-exec" {
+# #     command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/main-playbook.yml"
+# #   }
+# # }
 
 # resource "null_resource" "jenkins_install" {
 #   depends_on = [aws_instance.jenkins]
