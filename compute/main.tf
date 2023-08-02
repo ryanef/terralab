@@ -108,5 +108,5 @@ resource "aws_security_group" "ssh" {
 
 resource "aws_key_pair" "tl_key" {
   key_name   = "tl-ssh"
-  public_key = file("/home/r/.ssh/terralab.pub")
+  public_key = file("/home/ubuntu/.ssh/terralab.pub")
 }
