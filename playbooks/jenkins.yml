@@ -27,6 +27,18 @@
       name: jenkins
       enabled: yes
       state: started
+  - name: create jenkins user
+    ansible.builtin.user:
+      name: jenkins
+      group: wheel
+  - name: create  jenkins sudoers
+    ansible.builtin.file:
+      path: /etc/sudoers.d/jenkins
+      state: touch
+  - name: add jenkins to file
+    ansible.builtin.lineinfile:
+      path: /etc/sudoers.d/jenkins
+      line: jenkins ALL=(ALL) NOPASSWD:ALL
   - name: download terraform key
     ansible.builtin.apt_key:
       url: https://apt.releases.hashicorp.com/gpg

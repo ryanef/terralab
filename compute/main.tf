@@ -20,7 +20,6 @@ resource "aws_instance" "terralab" {
   ami           = data.aws_ami.ubuntu.id
   key_name= aws_key_pair.tl_key.id
   security_groups = [aws_security_group.ssh.id]
-  depends_on = [aws_key_pair.tl_key]
   instance_type = "t3.micro"
   count = 3
 
@@ -39,30 +38,6 @@ resource "aws_instance" "terralab" {
   }
 }
 
-# resource "aws_instance" "jenkins" {
-#   subnet_id = var.public_subnets[0]
-#   ami           = data.aws_ami.ubuntu.id
-#   key_name= aws_key_pair.tl_key.id
-#   security_groups = [aws_security_group.ssh.id]
-#   depends_on = [aws_key_pair.tl_key]
-#   instance_type = "t3.small"
-#   count = 1
-
-#   provisioner "local-exec" {
-#     command = "printf '\n${self.public_ip}' >> aws_jenkins_server && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region ${var.AWS_REGION}"
-#     environment = {}
-#   }
-
-#   provisioner "local-exec" {
-#     when = destroy
-#     command = "sed -i '/^[0-9]/d' aws_jenkins_server"
-#   }
-
-#   tags = {
-#     Name = "tl-jenkins"
-#   }
-# }
-
 # # resource "null_resource" "grafana_install" {
 # #   depends_on = [aws_instance.terralab]
 # #   provisioner "local-exec" {
@@ -70,12 +45,7 @@ resource "aws_instance" "terralab" {
 # #   }
 # # }
 
-# resource "null_resource" "jenkins_install" {
-#   depends_on = [aws_instance.jenkins]
-#   provisioner "local-exec" {
-#     command = "ansible-playbook -i aws_web_servers --key-file /home/r/.ssh/terralab playbooks/jenkins.yml"
-#   }
-# }
+
 resource "aws_lb_target_group_attachment" "tl-tg-attachment" {
   target_group_arn = var.target_group_arn
   count = length(aws_instance.terralab)
@@ -93,7 +63,7 @@ resource "aws_security_group" "ssh" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["172.72.200.66/32"]
+    cidr_blocks      = ["172.72.200.66/32", "52.5.185.132/32"]
 
   }
   ingress {
@@ -114,7 +84,7 @@ resource "aws_security_group" "ssh" {
   }
 
     egress {
-    description      = "s"
+    description      = "outbound 80"
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
@@ -123,7 +93,7 @@ resource "aws_security_group" "ssh" {
   }
 
     egress {
-    description      = "s"
+    description      = "ssl"
     from_port        = 443
     to_port          = 443
     protocol         = "tcp"
@@ -138,5 +108,5 @@ resource "aws_security_group" "ssh" {
 
 resource "aws_key_pair" "tl_key" {
   key_name   = "tl-ssh"
-  public_key = file("/home/ubuntu/.ssh/terralab.pub")
+  public_key = file("/home/r/.ssh/terralab.pub")
 }
