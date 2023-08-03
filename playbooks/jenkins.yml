@@ -1,5 +1,5 @@
 ---
-- name: jenkins and terraform install
+- name: jenkins java and terraform install
   hosts: jenkins
   remote_user: ubuntu
   become: yes
