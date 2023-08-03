@@ -25,7 +25,7 @@ resource "aws_instance" "terralab" {
 
   provisioner "local-exec" {
     command = "printf '\n${self.public_ip}' >> aws_web_servers && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region ${var.AWS_REGION}"
-    environment = {}
+  
   }
 
   provisioner "local-exec" {
@@ -109,5 +109,5 @@ resource "aws_security_group" "ssh" {
 resource "aws_key_pair" "tl_key" {
   key_name   = "tl-ssh"
   # public_key = file("/var/lib/r/terralab.pub")
-  public_key = file("/home/r/.ssh/terralab.pub")
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCWDd74nsutkkfuUdgbQn/NmkbRpQa7GQIL157bfcWyHCXvugFpRoV2Uo/oD3BC6hkBsd8TPaelAQkm5fXwsEJN3gXP+DsYVsCV4aKdfjI42U0Ir8kzSYPo+bdueHCXLJqOobZhyVesglAfew/fNIVQThCHXVQnsSwRji1+fUbOV2FaTqV7stI9aWY8ufGHR9ZyUw6BMCuOpdCYU303QHe2/XAbgMIHFujjr78x+7Bd8OR8HNCX6McJw+8YGegB2TD7E6WpN8Ab7TpIFmDC4v1Vjlds9s/ZxOAa4l6jNH9SaUIHZmLGgKjIMeSU/nFIfPZp1JaEXT74DVAkUop45Ppj r@DESKTOP-NIAIPDD.lan"
 }
