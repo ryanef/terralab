@@ -6,17 +6,11 @@ pipeline {
     }
     stages {
 
-        stage('apply'){
-            steps {
-                withAWS(credentials: 'AWS', region: 'us-east-1'){
-                sh 'terraform apply -auto-approve'
-                }
-            }
-        }
+
         stage('ansible playbook'){
             steps{
                 withAWS(credentials: 'AWS', region: 'us-east-1'){
-                    ansiblePlaybook(credentialsId: 'ec2ssh', inventory: 'aws_web_servers', playbook: 'playbook/main-playbook.yml')
+                    ansiblePlaybook(credentialsId: 'ec2ssh', inventory: 'aws_web_servers', playbook: 'playbooks/main-playbook.yml')
                 }
             }
         }
