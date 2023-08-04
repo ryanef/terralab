@@ -5,10 +5,17 @@ pipeline {
         TF_CLI_CONFIG_FILE = credentials('tfcloud')
     }
     stages {
-        stage('destroy'){
+        stage('apply'){
             steps {
                 withAWS(credentials: 'AWS', region: 'us-east-1'){
-                sh 'terraform destroy -auto-approve'
+                sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+        stage('ansible playbook'){
+            steps{
+                withAWS(credentials: 'AWS', region: 'us-east-1'){
+                    ansiblePlaybook(credentialsId: 'ec2ssh', inventory: 'aws_web_servers', playbook: 'playbook/main-playbook.yml')
                 }
             }
         }
