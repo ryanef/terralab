@@ -9,7 +9,9 @@ pipeline {
             }
         }
         stage('plan'){
-            sh 'terraform plan -no-color'
+            steps {
+                sh 'terraform plan -no-color'
+            }
         }
     }
 }
