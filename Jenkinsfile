@@ -34,7 +34,7 @@ pipeline {
 
         stage('ansible playbook'){
             steps{
-                 ansiblePlaybook(credentialsId: 'ec2ssh', inventory: 'aws_web_servers', playbook: 'playbooks/main-playbook.yml')
+                 sh 'ansible-playbook -i aws_web_servers --private-key /var/lib/jenkins/terralab playbooks/main-playbook.yml'
             }
         }
 
