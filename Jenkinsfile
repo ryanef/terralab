@@ -5,27 +5,11 @@ pipeline {
         TF_CLI_CONFIG_FILE = credentials('tfcloud')
     }
     stages {
-        stage('init'){
-            steps {
-                sh 'terraform init -no-color'
-            }
-        }
-        stage('plan'){
-            steps {
-                sh 'terraform plan -no-color'
-            }
-        }
-        stage('apply'){
-            
-            steps {
-                withAWS(credentials: 'AWS', region: 'us-east-1'){
-                    sh 'terraform apply -auto-approve'
-                }
-            }
-        }
         stage('destroy'){
             steps {
-                sh 'terraform destroy -no-color'
+                withAWS(credentials: 'AWS', region: 'us-east-1'){
+                sh 'terraform destroy -auto-approve'
+                }
             }
         }
     }
