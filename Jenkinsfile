@@ -13,6 +13,10 @@ pipeline {
             }
         }
         stage('validate apply'){
+            when{
+                beforeInput true
+                branch "dev"
+            }
             input{
                 message 'Do you want to apply?'
                 ok "Apply this plan."
@@ -30,6 +34,10 @@ pipeline {
         }
 
         stage('validate ansible'){
+            when{
+                beforeInput true
+                branch "dev"
+            }           
             input{
                 message 'do you want to run ansible'
                 ok 'Run Ansible'
@@ -59,6 +67,17 @@ pipeline {
             steps {
                 sh 'terraform destroy -auto-approve -var-file="$BRANCH_NAME.tfvars"'
             }
+        }
+    }
+    post {
+        success {
+            echo 'Success'
+        }
+        failure {
+            sh 'terraform destroy -auto-approve -no-color -var-file="$BRANCH_NAME.tfvars"'
+        }
+        aborted {
+            sh 'terraform destroy -auto-approve -no-color -var-file="$BRANCH_NAME.tfvars"'           
         }
     }
 }
