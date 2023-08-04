@@ -5,13 +5,7 @@ pipeline {
         TF_CLI_CONFIG_FILE = credentials('tfcloud')
     }
     stages {
-        stage('ansible install'){
-            steps {
-                withAWS(credentials: 'AWS', region: 'us-east-1'){
-                sh 'apt install ansible -y'
-                }
-            }
-        }
+
         stage('apply'){
             steps {
                 withAWS(credentials: 'AWS', region: 'us-east-1'){
