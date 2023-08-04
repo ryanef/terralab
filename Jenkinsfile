@@ -5,22 +5,29 @@ pipeline {
         TF_CLI_CONFIG_FILE = credentials('tfcloud')
     }
     stages {
-        // stage('validate apply'){
-        //     input{
-        //         message 'Do you want to apply?'
-        //         ok "Apply this plan."
-        //     }
-        //     steps {
-        //         echo 'Apply accepted'
-        //     }
-        // }
-        // stage('apply'){
-        //     steps {
-        //         withAWS(credentials: 'AWS', region: 'us-east-1'){
-        //         sh 'terraform apply -auto-approve'
-        //         }
-        //     }
-        // }
+        stage('init'){
+            steps{
+                sh 'cat $BRANCH_NAME.tfvars'
+                sh 'terraform init'
+                
+            }
+        }
+        stage('validate apply'){
+            input{
+                message 'Do you want to apply?'
+                ok "Apply this plan."
+            }
+            steps {
+                echo 'Apply accepted'
+            }
+        }
+        stage('apply'){
+            steps {
+                withAWS(credentials: 'AWS', region: 'us-east-1'){
+                sh 'terraform apply -auto-approve -var-file="$BRANCH_NAME"'
+                }
+            }
+        }
 
         stage('validate ansible'){
             input{
