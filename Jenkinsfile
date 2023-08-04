@@ -24,7 +24,7 @@ pipeline {
         stage('apply'){
             steps {
                 withAWS(credentials: 'AWS', region: 'us-east-1'){
-                sh 'terraform apply -auto-approve -var-file="$BRANCH_NAME"'
+                sh 'terraform apply -auto-approve -var-file="$BRANCH_NAME".tfvars'
                 }
             }
         }
@@ -57,7 +57,7 @@ pipeline {
 
         stage('terraform destroy') {
             steps {
-                sh 'terraform destroy -auto-approve -var-file="$BRANCH_NAME"'
+                sh 'terraform destroy -auto-approve -var-file="$BRANCH_NAME".tfvars'
             }
         }
     }
