@@ -53,7 +53,7 @@ resource "aws_lb_target_group_attachment" "tl-tg-attachment" {
   port             = 80
 }
 
-resource "aws_security_group" "allowssh" {
+resource "aws_security_group" "ssh" {
   name        = "allow_ssh_tl"
   description = "Allow ssh inbound traffic"
   vpc_id      = var.vpc_id
@@ -83,7 +83,7 @@ resource "aws_security_group" "allowssh" {
 
   }
   ingress {
-    description      = "grafana"
+    description      = "prometheus"
     from_port        = 9000
     to_port          = 9000
     protocol         = "tcp"
