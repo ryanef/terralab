@@ -53,7 +53,7 @@ resource "aws_lb_target_group_attachment" "tl-tg-attachment" {
   port             = 80
 }
 
-resource "aws_security_group" "ssh" {
+resource "aws_security_group" "allowssh" {
   name        = "allow_ssh_tl"
   description = "Allow ssh inbound traffic"
   vpc_id      = var.vpc_id
@@ -63,7 +63,7 @@ resource "aws_security_group" "ssh" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["172.72.200.66/32", "52.5.185.132/32"]
+    cidr_blocks      = ["172.72.200.66/32", "52.54.6.240/32"]
 
   }
   ingress {
@@ -78,6 +78,14 @@ resource "aws_security_group" "ssh" {
     description      = "grafana"
     from_port        = 3000
     to_port          = 3000
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+
+  }
+  ingress {
+    description      = "grafana"
+    from_port        = 9000
+    to_port          = 9000
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
 
